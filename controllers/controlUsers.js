@@ -1,11 +1,16 @@
 
 //controlUsers.js
+const bcryptjs = require('bcryptjs');
 const { response ,request} = require('express');
+const { validationResult } = require('express-validator');
+
+
+const Usuario = require('../models/oneUser');
+
 
 const usuarios = {
     usuariosGET: (req=request, res = response) => {
         const {id,nombre,apikey='D234SFFS'} = req.query;
-
 
         res.status(403).json({
             ok: true,
@@ -13,22 +18,54 @@ const usuarios = {
             query:{id,nombre,apikey}
         });
     },
-    usuariosPOST: (req, res = response) => {
-        const {nombre,edad} = req.body;
+    //_____________________________________________________________________________________________________________
 
 
-        res.status(403).json({
+    usuariosPOST: async (req, res = response) => {
+        const errors=validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors});
+        }
+
+
+        //const{nombre, ...cola} = req.body; //con esto se desestructura todos los elementos aunque sean 100 
+        const {nombre,correo,password,rol}= req.body;
+        const usuario = new Usuario({nombre,correo,password,rol});
+
+        //verificar si existe el correo
+        const existeEmail= await Usuario.findOne({correo});
+        if (existeEmail) {
+            return res.status(400).json({
+                ok: false,
+                msg:'El correo ya existe'
+            })        
+        }
+
+        //hacer hash de la contraseña
+        const salt = bcryptjs.genSaltSync();
+        usuario.password = bcryptjs.hashSync(usuario.password,salt)
+
+
+        await usuario.save()
+        .catch((err, usuarioDB)=>{
+            console.log('error',err);
+        })
+
+        res.status(201).json({
             ok: true,
             msg: 'api post desde el controlador',
-            body:{nombre,edad}
+            usuario
         });
     },
+    //_____________________________________________________________________________________________________________
     usuariosPATCH: (req, res = response) => {
         res.status(403).json({
             ok: true,
             msg: 'api patch desde el controlador'
         });
     },
+    //_____________________________________________________________________________________________________________
+
     usuariosPUT: (req, res = response) => {
         const id = req.params.id;
 
@@ -39,6 +76,7 @@ const usuarios = {
             id,
         });
     },
+    //_____________________________________________________________________________________________________________
     usuariosDELETE: (req, res = response) => {
         res.status(403).json({
             ok: true,

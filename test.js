@@ -1,7 +1,3 @@
-const {Router} = require('express');
-const {usuarios} = require('../controllers/controlUsers.js');
+require('dotenv').config();
 
-const router = Router();
-
-router.get('/',usuarios.usuariosGET)
-module.exports = router;
+console.log(process.env.URL_NODE);
