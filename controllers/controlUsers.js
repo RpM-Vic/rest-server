@@ -2,7 +2,7 @@
 //controlUsers.js
 const bcryptjs = require('bcryptjs');
 const { response ,request} = require('express');
-const { validationResult } = require('express-validator');
+
 
 
 const Usuario = require('../models/oneUser');
@@ -22,13 +22,10 @@ const usuarios = {
 
 
     usuariosPOST: async (req, res = response) => {
-        const errors=validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json({errors});
-        }
 
 
-        //const{nombre, ...cola} = req.body; //con esto se desestructura todos los elementos aunque sean 100 
+
+        //const{nombre, ...cola} = req.body; //con esto se desestructuran todos los elementos aunque sean 100 
         const {nombre,correo,password,rol}= req.body;
         const usuario = new Usuario({nombre,correo,password,rol});
 
