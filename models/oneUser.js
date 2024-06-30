@@ -21,7 +21,7 @@ const UsuarioSchema = Schema({
     rol:{
         type:String,
         required:true,
-        enum:['ADMIN_ROLE','USER_ROLE']
+        //enum:['ADMIN_ROLE','USER_ROLE']
     },
     estado:{
         type:Boolean,
@@ -32,16 +32,10 @@ const UsuarioSchema = Schema({
         default:false
     }
 })
-
-
-
+//tiene que serve fucion normal porque vamos a utilizar this. 
+//y las funciones flecha mantienen el this afuera de la funcion
+UsuarioSchema.methods.toJSON = function(){
+    const {__v,password,_id,...usuario} =this.toObject()
+    return usuario;
+}
 module.exports = model('Usuario',UsuarioSchema)
-
-
-/* {
-    nombre: "<NAME>",
-    email: "email@gmail.com",
-    password: "pass",
-    estado:false,
-    google:false
-} */
