@@ -1,7 +1,8 @@
 
-//validar-jbt
+//validar-jwt.js
 const jwt = require('jsonwebtoken');
 const { request ,response} = require('express');
+require('dotenv').config();
 
 const validarJWT =(req=request,res=response,next)=>{
     const token=req.header('x-token');
@@ -14,7 +15,6 @@ const validarJWT =(req=request,res=response,next)=>{
 
     try{
         jwt.verify(token,process.env.SECRETORPRIVATEKEY);
-
         next();
     }
     catch(err){

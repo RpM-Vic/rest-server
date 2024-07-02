@@ -61,29 +61,13 @@ const login = {
     //____________________________________________________________________________________
     logindelete: async (req,res=response)=>{
         const body = req.body;
-        const {correo,password}=req.body;
+        const {correo}=req.body;
 
-        //el usuario est'a activo
         const usuario = await Usuario.findOne({correo});
-        if(!usuario){
-            return res.status(401).json({
-                msg: 'acceso denegado - correo no existe',
-                body,
-                usuario
-            })
-        }
-        if(usuario.status){
-            return res.status(401).json({
+
+        if(!usuario.estado){
+            return res.estado(401).json({
                 msg: 'acceso denegado - usuario eliminado',
-                body,
-                usuario
-            })
-        }
-        //verificar la contraseña
-        const validPassword =  bcrypt.compareSync(password,usuario.password);
-        if(!validPassword){
-            return res.status(401).json({
-                msg: 'acceso denegado - password incorrecto',
                 body,
                 usuario
             })
@@ -94,7 +78,7 @@ const login = {
             res.json({
                 ok:true,
                 msg:'login',
-                token,
+                //token,
                 body,
                 usuario
             })
@@ -103,7 +87,8 @@ const login = {
         catch(error){
             console.log('error')
             return res.status(500).json({
-                msg:"hable con el administrador"
+                msg:"hable con el administrador",
+                msg2:error,
             })
         }
     }
