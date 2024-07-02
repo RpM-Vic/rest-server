@@ -12,12 +12,12 @@ const validarJWT = require('../middlewares/validar-jwt');
 const routerAuth = Router();
 //_____________________________________________________________
 routerAuth.post('/login',[
-    validarJWT,
+    //validarJWT,
     check('password','contraseña requerida').not().isEmpty(),
     check('correo','correo no es valido').isEmail(),
     validarCampos   
 
-],login)
+],login.loginpost)
 //_____________________________________________________________
 routerAuth.delete('/login',[
     validarJWT,
@@ -25,7 +25,7 @@ routerAuth.delete('/login',[
     check('correo','correo no es valido').isEmail(),
     validarCampos   
 
-],login)
+],login.logindelete)
 
 
 module.exports = routerAuth;
