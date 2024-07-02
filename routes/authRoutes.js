@@ -19,7 +19,7 @@ routerAuth.post('/login',[
 
 ],login.loginpost)
 //_____________________________________________________________
-routerAuth.delete('/login',[
+routerAuth.delete('/login:uid',[
     validarJWT,
     check('password','contraseña requerida').not().isEmpty(),
     check('correo','correo no es valido').isEmail(),

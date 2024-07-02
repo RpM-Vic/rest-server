@@ -1,5 +1,5 @@
 
-//authControl.j
+//authControl.js
 const {response} = require('express')
 const bcrypt = require('bcryptjs');
 
@@ -38,13 +38,17 @@ const login = {
             })
         }
         //generar un token
-        const token = await generarJWT(usuario.uid);
+        const seed1 =usuario._id;
+        const seed2 =usuario.uid;
+        const token = await generarJWT(seed1);
 
         //so todo sali'o bien, enviar token
         try{
             res.json({
                 ok:true,
                 msg:'login',
+                seed1,
+                seed2,
                 token,
                 body,
                 usuario
@@ -60,31 +64,36 @@ const login = {
     },
     //____________________________________________________________________________________
     logindelete: async (req,res=response)=>{
+        //let usuarioQueBorra = new Usuario();
+        const {uid} = req.params;
+
+        //la uid params es del usuario que est'a tratando de borrar
+        const usuarioQueBorra = await Usuario.findById(uid)
+
+        //usuario es el que va a ser eliminado
         const body = req.body;
         const {correo}=req.body;
 
-        const usuario = await Usuario.findOne({correo});
+        const usuaroiBorrado = await Usuario.findOne({correo});
 
-        if(!usuario.estado){
+        if(!usuaroiBorrado.estado){
             return res.estado(401).json({
                 msg: 'acceso denegado - usuario eliminado',
                 body,
-                usuario
+                usuaroiBorrado
             })
         }
 
         //so todo sali'o bien, enviar token
         try{
-            res.json({
+            return res.status(402).json({
                 ok:true,
                 msg:'login',
                 //token,
-                body,
-                usuario
+                usuarioQueBorra
+                ,usuaroiBorrado
             })
-        }
-    
-        catch(error){
+        }catch(error){
             console.log('error')
             return res.status(500).json({
                 msg:"hable con el administrador",
