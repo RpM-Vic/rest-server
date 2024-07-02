@@ -9,7 +9,7 @@ const {usuarios}= require('../controllers/controlUsers.js');
 const validarCampos = require('../middlewares/validar_campos.js');
 
 const router = Router();
-
+//__________________________________________________________________
 router.get('/',usuarios.usuariosGET)
 //__________________________________________________________________
 router.post('/',[
@@ -25,16 +25,25 @@ router.post('/',[
 ],usuarios.usuariosPOST)
 //________________________________________________________________________________
 router.put('/:id',[
-    check('id','el id debe ser un mongoid').isMongoId(),
-    check('id').custom( existeUsuarioPorId),  
+    check('id','el id debe ser un mongoid').isMongoId(),// este es el formato correcto
+    check('id').custom( existeUsuarioPorId), //localhost:3000/api/usuarios/66808535bed962255a264d86 
     check('rol').custom(esRoleValido),
     validarCampos
 
 ],
 usuarios.usuariosPUT)
 //________________________________________________________________________________
-router.delete('/',usuarios.usuariosDELETE)
-router.patch('/',usuarios.usuariosPATCH)
+router.delete('/:id',[
+    check('id','el id debe ser un mongoid').isMongoId(),// este es el formato correcto
+    check('id').custom( existeUsuarioPorId), //localhost:3000/api/usuarios/66808535bed962255a264d86 
+    validarCampos
+],usuarios.usuariosDELETE)
+//________________________________________________________________________________
+router.patch('/',[
+    check('id','el id debe ser un mongoid').isMongoId(),// este es el formato correcto
+    check('id').custom( existeUsuarioPorId), //localhost:3000/api/usuarios/66808535bed962255a264d86 
+    validarCampos
+],usuarios.usuariosPATCH)
 
 module.exports = router;
 

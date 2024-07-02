@@ -9,13 +9,23 @@ const Usuario = require('../models/oneUser');
 
 
 const usuarios = {
-    usuariosGET: (req=request, res = response) => {
-        const {id=6,nombre='juan',apikey='D234SFFS'} = req.query;
+    usuariosGET: async (req=request, res = response) => {
+        const {id=6,nombre='juan',apikey='D234SFFS', limit=5, desde=1} = req.query;
+        const filtro = {estado:true};
+
+        const totalNumero = Usuario.countDocuments(filtro)
+        const totalObjects =Usuario.find(filtro) //filtro  
+            .skip(parseInt(desde))  //desde donde empieza
+            .limit(parseInt(limit)) //desde donde termina
+
+        const resp = await Promise.all([totalNumero,totalObjects])        
 
         res.status(403).json({
             ok: true,
             msg: 'api get desde el controlador',
-            query:{id,nombre,apikey}
+            query:{id,nombre,apikey},
+            totalNumero: resp[0],
+            totalObjects:resp[1]
         });
     },
     //_____________________________________________________________________________________________________________
@@ -44,10 +54,16 @@ const usuarios = {
         });
     },
     //_____________________________________________________________________________________________________________
-    usuariosPATCH: (req, res = response) => {
-        res.status(403).json({
+    usuariosPATCH: async (req, res = response) => {
+        const id = req.params.id;
+
+        const usuario = await Usuario.findByIdAndUpdate(id, req.body, { new: true });
+
+        res.status(203).json({
             ok: true,
-            msg: 'api patch desde el controlador'
+            msg: 'api patch desde el controlador',
+            id,
+            usuario
         });
     },
     //_____________________________________________________________________________________________________________
@@ -76,10 +92,17 @@ const usuarios = {
         });
     },
     //_____________________________________________________________________________________________________________
-    usuariosDELETE: (req, res = response) => {
-        res.status(403).json({
+    usuariosDELETE: async (req, res = response) => {
+        const id = req.params.id;
+
+        //const usuario = await Usuario.findByIdAndDelete(id);
+        const usuario = await Usuario.findByIdAndUpdate(id,{estado:false});
+
+        res.status(203).json({
             ok: true,
-            msg: 'api delete desde el controlador'
+            msg: 'api delete desde el controlador',
+            id,
+            usuario
         });
     }
 };
