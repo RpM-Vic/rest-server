@@ -10,7 +10,7 @@ const Usuario = require('../models/oneUser');
 
 const usuarios = {
     usuariosGET: (req=request, res = response) => {
-        const {id,nombre,apikey='D234SFFS'} = req.query;
+        const {id=6,nombre='juan',apikey='D234SFFS'} = req.query;
 
         res.status(403).json({
             ok: true,
@@ -23,20 +23,9 @@ const usuarios = {
 
     usuariosPOST: async (req, res = response) => {
 
-
-
         //const{nombre, ...cola} = req.body; //con esto se desestructuran todos los elementos aunque sean 100 
         const {nombre,correo,password,rol}= req.body;
         const usuario = new Usuario({nombre,correo,password,rol});
-
-        //verificar si existe el correo
-        const existeEmail= await Usuario.findOne({correo});
-        if (existeEmail) {
-            return res.status(400).json({
-                ok: false,
-                msg:'El correo ya existe'
-            })        
-        }
 
         //hacer hash de la contraseña
         const salt = bcryptjs.genSaltSync();
@@ -63,14 +52,27 @@ const usuarios = {
     },
     //_____________________________________________________________________________________________________________
 
-    usuariosPUT: (req, res = response) => {
-        const id = req.params.id;
+    usuariosPUT: async (req=request, res = response) => {
+        //const id = req.params.id;
+        const {id} = req.params;
+        const {_id,password,google,correo,...resto}=req.body;
+        const body2=req.body
 
-
-        res.status(403).json({
+        //validar contra base de datos
+        const usuario = await Usuario.findByIdAndUpdate(id,{...resto},{new:true})
+        
+        if(password){
+            const salt = bcryptjs.genSaltSync();
+            const password2 = bcryptjs.hashSync(password,salt)
+        } 
+        
+        res.status(200).json({
             ok: true,
             msg: 'api put desde el controlador',
             id,
+            _id,
+            usuario,
+            body2
         });
     },
     //_____________________________________________________________________________________________________________

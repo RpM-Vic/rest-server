@@ -3,7 +3,7 @@
 const  Usuario = require('../models/oneUser.js')
 const Role = require('../models/roles.js')
 
-const esRoleValido = async(rol='')=>{
+const esRoleValido = async(rol='ADMIN_ROLE')=>{
     const existeRol = await Role.findOne({rol});
     if(!existeRol){
         throw new Error(`el rol ${rol} no existe`);
@@ -13,9 +13,17 @@ const esRoleValido = async(rol='')=>{
 const eamilregistrado = async(correo='')=>{
     const existeCorreo = await Usuario.findOne({correo});
     if(existeCorreo){
-        throw new Error(`el correo validator ${existeCorreo} ya existe`);
+        throw new Error(`el correo validator ${correo} ya existe`);
+    }
+}
+
+const existeUsuarioPorId = async(id='')=>{
+    const existeid = await Usuario.findById(id);
+    if(!existeid){
+        throw new Error(`el id validator ${id} no existe`);
     }
 }
 
 
-module.exports = {esRoleValido,eamilregistrado};
+
+module.exports = {esRoleValido,eamilregistrado,existeUsuarioPorId};
