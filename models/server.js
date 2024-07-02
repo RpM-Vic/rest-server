@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const router = require('../routes/users');
+const routerAuth = require('../routes/authRoutes');
 const {dbConnection} = require('../database/config');
 const app = express();
 
@@ -13,6 +14,7 @@ class Server {
         this.app = express();
         this.port = process.env.PORT || '3001';
         this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
 
         this.conectarDB();
 
@@ -34,8 +36,9 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.usuariosPath, router);
-        this.app.use('*', (req,res)=>{
+        this.app.use(this.authPath, routerAuth);
+        this.app.use(this.usuariosPath, router);       
+        this.app.use('*', (req,res)=>{  //default route cuando no se encuntra ninguna otra
             res.send('Not Found anything');
         });
     }

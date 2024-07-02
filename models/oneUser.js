@@ -36,6 +36,7 @@ const UsuarioSchema = Schema({
 //y las funciones flecha mantienen el this afuera de la funcion
 UsuarioSchema.methods.toJSON = function(){
     const {__v,password,_id,...usuario} =this.toObject()
+    usuario.uid = _id;
     return usuario;
 }
 module.exports = model('Usuario',UsuarioSchema)
