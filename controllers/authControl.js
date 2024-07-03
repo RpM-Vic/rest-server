@@ -74,7 +74,8 @@ const login = {
         const body = req.body;
         const {correo}=req.body;
 
-        const usuaroiBorrado = await Usuario.findOne({correo});
+        const usuaroiBorrado = await Usuario.findOneAndUpdate({correo},{$set:{estado:false}});
+        //findOne({correo});
 
         if(!usuaroiBorrado.estado){
             return res.estado(401).json({

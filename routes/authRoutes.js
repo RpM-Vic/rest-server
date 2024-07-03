@@ -7,6 +7,8 @@ const {login} = require('../controllers/authControl.js');
 const validarCampos = require('../middlewares/validar_campos.js');
 const validarJWT = require('../middlewares/validar-jwt');
 
+//const {validaciones}= require('../middlewares');
+
 
 
 const routerAuth = Router();
