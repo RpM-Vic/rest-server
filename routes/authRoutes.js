@@ -29,5 +29,25 @@ routerAuth.delete('/login:uid',[
 
 ],login.logindelete)
 
+//_____________________________________________________________
+routerAuth.post('/google',[
+    check('id_token','id_token es necesario').not().isEmpty(),
+
+    validarCampos   
+
+    ],async (req,res=response)=>{
+        const {id_token}= req.body;
+
+
+
+        res.status(200).json({
+            message:'login de google correcto',
+            id_token
+        })
+    }
+)
+
+
+
 
 module.exports = routerAuth;
