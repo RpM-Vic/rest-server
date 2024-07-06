@@ -3,12 +3,14 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
 const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
 const { dbConnection } = require('../database/config');
 const Usuario = require('../models/oneUser');
+const {uploadRoute}= require('../routes/uploadRoute')
 
 class Server {
     constructor() {
@@ -29,14 +31,19 @@ class Server {
     }
 
     middlewares() {
-        this.app.use(express.static('public'));
+        this.app.use(express.static(path.join(__dirname, '..', 'public', 'index.html')));
         this.app.use(cors());
         this.app.use(express.json());
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/'
+        }));
     }
 
     routes() {
         this.app.use(this.authPath, routerAuth);
         this.app.use(this.usuariosPath, router);
+        this.app.use('/upload',uploadRoute)  
 
         this.app.get('/getinclude/:coleccion/:termino1?/:termino2?', async (req, res) => {
             const { coleccion, termino1, termino2 } = req.params;

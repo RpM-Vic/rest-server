@@ -12,6 +12,7 @@ const router = Router();
 //__________________________________________________________________
 router.get('/',usuarios.usuariosGET)
 //__________________________________________________________________
+//__________________________________________________________________
 router.post('/',[
     check('nombre','el nombre es obligatorio').not().isEmpty(),
     check('password','el pass debe tener 6 letras').isLength({min :6}),
