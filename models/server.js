@@ -6,8 +6,8 @@ require('dotenv').config();
 
 const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
-const {dbConnection} = require('../database/config');
-const app = express();
+const { dbConnection } = require('../database/config');
+const Usuario = require('../models/oneUser');
 
 class Server {
     constructor() {
@@ -21,25 +21,56 @@ class Server {
         // Configuración de middlewares y rutas
         this.middlewares();
         this.routes();
-
     }
 
-    async conectarDB(){
+    async conectarDB() {
         await dbConnection();
     }
 
     middlewares() {
         this.app.use(express.static('public'));
         this.app.use(cors());
-
         this.app.use(express.json());
     }
 
     routes() {
         this.app.use(this.authPath, routerAuth);
-        this.app.use(this.usuariosPath, router);       
-        this.app.use('*', (req,res)=>{  //default route cuando no se encuntra ninguna otra
-            res.send('Not Found anything');
+        this.app.use(this.usuariosPath, router);
+
+        this.app.get('/getinclude/:coleccion/:termino1?/:termino2?', async (req, res) => {
+            const { coleccion, termino1, termino2 } = req.params;
+        
+            const conditions = [];
+        
+            if (termino1) {
+                conditions.push({ [coleccion]: { $regex: termino1, $options: 'i' } });
+            }
+        
+            if (termino2) {
+                conditions.push({ [coleccion]: { $regex: termino2, $options: 'i' } });
+            }
+        
+            try {
+                const query = { estado: true };
+        
+                if (conditions.length > 0) {
+                    query.$and = conditions;
+                }
+        
+                const usuarios = await Usuario.find(query);
+                res.json({
+                    usuarios
+                });
+            } catch (error) {
+                res.status(500).json({
+                    msg: 'Error en el servidor',
+                    error
+                });
+            }
+        });
+
+        this.app.use('*', (req, res) => {  //default route cuando no se encuentra ninguna otra
+            res.status(404).send('Not Found anything');
         });
     }
 
