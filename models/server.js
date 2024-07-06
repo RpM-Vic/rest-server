@@ -70,9 +70,10 @@ class Server {
             }
         });
 
-        this.app.use('/', (req, res) => {
-            res.sendFile(__dirname + '/public/index.html');
-        })      
+        // Ruta para servir index.html
+        this.app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+        });    
 
         this.app.use('*', (req, res) => {  //default route cuando no se encuentra ninguna otra
             res.status(404).send('Not Found anything');
