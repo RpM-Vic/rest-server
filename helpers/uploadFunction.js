@@ -1,7 +1,8 @@
+
 // uploadFunction.js
 const path = require('path');
 
-const uploadFunction = async (files, permitedExtensions = ['jpg', 'png', 'webp']) => {
+const uploadFunction = async (id,files, permitedExtensions = ['jpg', 'png', 'webp']) => {
   if (!files || Object.keys(files).length === 0) {
     return { status: 400, msg: 'No files were uploaded.' };
   }
@@ -14,7 +15,8 @@ const uploadFunction = async (files, permitedExtensions = ['jpg', 'png', 'webp']
     return { status: 400, msg: `The extension ${extension} is not permitted` };
   }
 
-  const newName = `${Date.now()}.${extension}`;
+  const newName = `${id}.${extension}`;
+
   const uploadPath = path.join(__dirname, '..', 'uploads', newName);
 
   return new Promise((resolve, reject) => {

@@ -17,12 +17,16 @@ const eamilregistrado = async(correo='')=>{
     }
 }
 
-const existeUsuarioPorId = async(id='')=>{
-    const existeid = await Usuario.findById(id);
-    if(!existeid){
-        throw new Error(`el id validator ${id} no existe`);
+const existeUsuarioPorId = async (id = '') => {
+    try {
+        const existeId = await Usuario.findById(id);
+        if (!existeId) {
+            throw new Error(`El ID ${id} no existe en la base de datos`);
+        }
+    } catch (error) {
+        throw new Error(`Error al validar el ID: ${error.message}`);
     }
-}
+};
 
 const allowedCollections = (collection='',collections=[])=>{
     const included = collections.includes(collection)
