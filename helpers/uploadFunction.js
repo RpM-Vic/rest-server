@@ -1,32 +1,31 @@
-
-
-const { Router } = require('express');
+// uploadFunction.js
 const path = require('path');
 
-const uploadFunction=(files,permitedExtensions=['jpg','png','webp'])=>{
-    return new Promise((resolve,reject)=>{
-        const {file1} = files;
-        const cutName = file1.name.split('.');
-        console.log('cutName  >>>', cutName);
-        const extension = cutName[cutName.length -1];
+const uploadFunction = async (files, permitedExtensions = ['jpg', 'png', 'webp']) => {
+  if (!files || Object.keys(files).length === 0) {
+    return { status: 400, msg: 'No files were uploaded.' };
+  }
 
-        if(!permitedExtensions.includes(extension)) {
-            return reject(`The extension ${extension} is not permited`);
-        }      
-        const newName = `${Date.now()}.${extension}`;
-        const uploadPath = path.join(__dirname, '..', '/uploads/' , newName);
+  const { file1 } = files;
+  const cutName = file1.name.split('.');
+  const extension = cutName[cutName.length - 1];
 
-        file1.mv(uploadPath, (err) =>{
-            if (err) {
-                reject(err);
-            }
+  if (!permitedExtensions.includes(extension)) {
+    return { status: 400, msg: `The extension ${extension} is not permitted` };
+  }
 
-            resolve({msg:'File uploaded to ' + uploadPath});
-        });
-        resolve({uploadPath,extension});
+  const newName = `${Date.now()}.${extension}`;
+  const uploadPath = path.join(__dirname, '..', 'uploads', newName);
 
-    })
+  return new Promise((resolve, reject) => {
+    file1.mv(uploadPath, (err) => {
+      if (err) {
+        reject({ status: 400, msg: err.message });
+      } else {
+        resolve({ newName, extension });
+      }
+    });
+  });
+};
 
-}
-
-module.exports={ uploadFunction}
+module.exports = { uploadFunction };

@@ -24,6 +24,14 @@ const existeUsuarioPorId = async(id='')=>{
     }
 }
 
+const allowedCollections = (collection='',collections=[])=>{
+    const included = collections.includes(collection)
+    if(!included){
+        throw new Error(`la coleccion ${collection} no esta permitida`)
+    }
+    return true;
+}
 
 
-module.exports = {esRoleValido,eamilregistrado,existeUsuarioPorId};
+
+module.exports = {esRoleValido,eamilregistrado,existeUsuarioPorId,allowedCollections};
