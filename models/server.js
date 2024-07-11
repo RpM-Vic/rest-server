@@ -9,16 +9,12 @@ require('dotenv').config();
 const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
 const { dbConnection } = require('../database/config');
-const Usuario = require('../models/oneUser');
 const {uploadRoute}= require('../routes/uploadRoute')
 
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || '3001';
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';
-
         this.conectarDB();
 
         // Configuración de middlewares y rutas
@@ -42,41 +38,10 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.authPath, routerAuth);
-        this.app.use(this.usuariosPath, router);
+        this.app.use('/api/auth', routerAuth);
         this.app.use('/upload',uploadRoute)  
 
-        this.app.get('/getinclude/:coleccion/:termino1?/:termino2?', async (req, res) => {
-            const { coleccion, termino1, termino2 } = req.params;
-        
-            const conditions = [];
-        
-            if (termino1) {
-                conditions.push({ [coleccion]: { $regex: termino1, $options: 'i' } });
-            }
-        
-            if (termino2) {
-                conditions.push({ [coleccion]: { $regex: termino2, $options: 'i' } });
-            }
-        
-            try {
-                const query = { estado: true };
-        
-                if (conditions.length > 0) {
-                    query.$and = conditions;
-                }
-        
-                const usuarios = await Usuario.find(query);
-                res.json({
-                    usuarios
-                });
-            } catch (error) {
-                res.status(500).json({
-                    msg: 'Error en el servidor',
-                    error
-                });
-            }
-        });
+        this.app.use('/getinclude', router );//Esta no funciona
 
         // Ruta para servir index.html
         this.app.get('/', (req, res) => {
