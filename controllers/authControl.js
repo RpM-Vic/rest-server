@@ -16,6 +16,7 @@ const login = {
         const usuario = await Usuario.findOne({correo});
         if(!usuario){
             return res.status(401).json({
+                ok:false,
                 msg: 'acceso denegado - correo no existe',
                 body,
                 usuario
@@ -23,6 +24,7 @@ const login = {
         }
         if(usuario.status){
             return res.status(401).json({
+                ok:false,
                 msg: 'acceso denegado - usuario eliminado',
                 body,
                 usuario
@@ -32,6 +34,7 @@ const login = {
         const validPassword =  bcrypt.compareSync(password,usuario.password);
         if(!validPassword){
             return res.status(401).json({
+                ok:false,
                 msg: 'acceso denegado - password incorrecto',
                 body,
                 usuario

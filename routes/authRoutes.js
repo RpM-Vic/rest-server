@@ -59,10 +59,12 @@ routerAuth.post('/google',[
         }
     }
 )
-routerAuth.get('/',[
+routerAuth.get('/validate',[
         validarJWT,
         validarCampos
     ],async(req,res=response)=>{
+
+
         const usuario = await Usuario.findOne({ _id: req.uid });
         if (usuario) {
           res.status(200).json(usuario);
@@ -73,8 +75,8 @@ routerAuth.get('/',[
 
 
 
-/* 
-        res.status(200)
+
+/*         res.status(200)
         .sendFile(path.join(__dirname, '../public', 'chat.html')); */
 })
 

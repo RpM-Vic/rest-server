@@ -67,7 +67,7 @@
                 console.log(formData);
 
                 /////////////////////////////////////////
-                fetch("http://localhost:3000/getinclude", {
+                fetch("http://localhost:3000/auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -78,7 +78,7 @@
                 .then(data => {
                     if (data.ok) {
                         console.log(data);
-                        localStorage.setItem("token",data.usuario2.token);
+                        localStorage.setItem("token",data.token);
                     }
                     else{
                         console.log(data);                                                
