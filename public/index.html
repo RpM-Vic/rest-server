@@ -76,14 +76,13 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
-/*                     if (data.usuario.uid===undefined) {
+                    if (data.ok) {
                         console.log(data);
+                        localStorage.setItem("token",data.usuario2.token);
                     }
                     else{
-                        console.log(data.usuario.token);
-                        localStorage.setItem("token",data.usuario.token);                        
-                    } */
+                        console.log(data);                                                
+                    }
                     
                 })
                 .catch(err => { console.error(err) })
