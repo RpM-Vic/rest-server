@@ -8,7 +8,7 @@ const generarJWT = async (uid='') => {
     return new Promise((resolve, reject) => {
         const payload = {uid};
 
-        jwt.sign(payload,process.env.SECRETORPRIVATEKEY, {expiresIn: '4h'}, 
+        jwt.sign(payload,process.env.SECRETORPRIVATEKEY, {expiresIn: '2y'}, 
             (err, token)=> {
                 if (err){
                     reject('Error generando el JWT');

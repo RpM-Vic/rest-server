@@ -10,7 +10,7 @@ const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
 const { dbConnection } = require('../database/config');
 const {uploadRoute}= require('../routes/uploadRoute')
-const {socketController} =require('../sockets/socketControllers.js')    
+const {socketController} =require('../sockets/socketControllers.js')  
 
 
 class Server {
@@ -43,7 +43,7 @@ class Server {
     }
 
     routes() {
-        this.app.use('/api/auth', routerAuth);
+        this.app.use('/auth', routerAuth);
         this.app.use('/upload',uploadRoute)  
 
         this.app.use('/getinclude', router );

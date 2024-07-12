@@ -2,11 +2,13 @@
 //auth.js
 const { Router } = require('express');
 const  {check} = require('express-validator');
+const path = require('path');
 
 const {login} = require('../controllers/authControl.js');
 const validarCampos = require('../middlewares/validar_campos.js');
 const validarJWT = require('../middlewares/validar-jwt');
 const {googleVerify} = require('../helpers/googleVerify.js');
+const Usuario=require('../models/oneUser');
 
 //const {validaciones}= require('../middlewares'); //from index but i don't want to make hell of files
 
@@ -57,7 +59,24 @@ routerAuth.post('/google',[
         }
     }
 )
+routerAuth.get('/',[
+        validarJWT,
+        validarCampos
+    ],async(req,res=response)=>{
+        const usuario = await Usuario.findOne({ _id: req.uid });
+        if (usuario) {
+          res.status(200).json(usuario);
+        } else {
+          res.status(404).json({ message: 'Usuario not found' });
+        }
 
+
+
+
+/* 
+        res.status(200)
+        .sendFile(path.join(__dirname, '../public', 'chat.html')); */
+})
 
 
 

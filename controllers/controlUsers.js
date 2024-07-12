@@ -54,7 +54,7 @@ const usuarios = {
     
             // Generate the JWT
             try{
-                const token = await generarJWT('usuario.uid')
+                const token = await generarJWT(usuario.uid)
                 let usuario2 = usuario.toObject()
                 usuario2.token = token;
                 console.log('usuario: ', usuario2);
