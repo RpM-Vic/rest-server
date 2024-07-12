@@ -11,12 +11,15 @@ async function googleVerify(token='') {
       //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
   });
   const {name, picture, email} = ticket.getPayload();
+  //const WholePayload=ticket.getPayload();
   //const userid = payload['sub'];
 
   return {
     nombre:name, 
     img:picture, 
     correo:email
+    //,payload:WholePayload
+
     }
   // If the request specified a Google Workspace domain:
   // const domain = payload['hd'];

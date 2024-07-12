@@ -10,16 +10,21 @@ const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
 const { dbConnection } = require('../database/config');
 const {uploadRoute}= require('../routes/uploadRoute')
+const {socketController} =require('../sockets/socketControllers.js')    
+
 
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || '3001';
         this.conectarDB();
+        this.server = require('http').createServer(this.app);
+        this.io     = require('socket.io')(this.server);
 
         // Configuración de middlewares y rutas
         this.middlewares();
         this.routes();
+        this.sockets();
     }
 
     async conectarDB() {
@@ -27,7 +32,7 @@ class Server {
     }
 
     middlewares() {
-        this.app.use(express.static(path.join(__dirname, '..', 'public', 'index.html')));
+        this.app.use(express.static(path.join(__dirname, '..', 'public')))//, 'index.html')));
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(fileUpload({
@@ -41,7 +46,7 @@ class Server {
         this.app.use('/api/auth', routerAuth);
         this.app.use('/upload',uploadRoute)  
 
-        this.app.use('/getinclude', router );//Esta no funciona
+        this.app.use('/getinclude', router );
 
         // Ruta para servir index.html
         this.app.get('/', (req, res) => {
@@ -55,8 +60,13 @@ class Server {
 
     }
 
+    sockets(){
+        this.io.on('connection', socketController)
+    }
+
     listen() {
-        this.app.listen(this.port, () => {
+        //this.app.listen(this.port, () => {//This is only for rest api
+        this.server.listen(this.port, () => {
             console.log(`Server on port ${this.port}`);
         });
     }

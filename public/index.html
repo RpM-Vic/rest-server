@@ -1,68 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <script src="https://accounts.google.com/gsi/client" async></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
-        <body class="container">
 
-            <div class="row-mt-5">
-                <div class="col-sm-6">
-                    <h1>Google Sign In</h1>
-                    <hr>
-                    <br>
-                    <div id="g_id_onload" data-client_id="915070546995-4if6o6stipinbdip286mn8fmkqjeq64s.apps.googleusercontent.com"
-                        data-auto_prompt="false" data-callback="handleCredentialResponse">
-            
-                    </div>
+    <body class="container">
+
+        <div class="row-mt-5">
+            <div class="col-sm-6">
+                <h1>Google Sign In</h1>
+                <hr>
+                <br>
+                <div id="g_id_onload"
+                    data-client_id="915070546995-4if6o6stipinbdip286mn8fmkqjeq64s.apps.googleusercontent.com"
+                    data-auto_prompt="false" data-callback="handleCredentialResponse">
+
                 </div>
-                <div class="col-sm-6">
-            
-                </div>
-            
             </div>
 
 
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
-                data-shape="rectangular" data-logo_alignment="left">
+            <div class="col-sm-6">
+                <h2>Custom login</h2>
+                <hr>
+                <form class="d-grid"> <!-- this makes the button larger -->
+                    <input type="text" id="txtemail" name="correo" placeholder="correo" class="form-control mb-3">
+                    <input type="text" id="txtpassword" name="password" placeholder="password" class="form-control mb-3">
+                
+                    <button type="submit" class="btn btn-primary">
+                        Ingresar
+                    </button>
+                </form>
+
+
             </div>
-            <hr>
-            <input type="button" value="sign out" id="signOutButton">
+
+        </div>
+
+
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
+            data-shape="rectangular" data-logo_alignment="left">
+        </div>
+        <hr>
+        <input type="button" value="sign out" id="signOutButton">
 
         <script>
-        function handleCredentialResponse(response) {
-            // decodeJwtResponse() is a custom function defined by you
-            // to decode the credential response.
-            console.log("ID_token =" + response.credential);
-            const body = { "id_token": response.credential }
+            const MyForm = document.querySelector('form');
 
-            fetch("http://localhost:3000/api/auth/google", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
+            
+            MyForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const formData = {}
+
+                for( let el of MyForm.elements ) {
+                    if (el.name.length > 0 ) {
+                        formData[el.name] = el.value;
+                    }
+                }
+                formData.nombre='pancho'
+                formData.rol="VENTAS"
+                console.log(formData);
+
+                /////////////////////////////////////////
+                fetch("http://localhost:3000/getinclude", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                })
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);
-                    localStorage.setItem("email",data.googleUser.correo);
+/*                     if (data.usuario.uid===undefined) {
+                        console.log(data);
+                    }
+                    else{
+                        console.log(data.usuario.token);
+                        localStorage.setItem("token",data.usuario.token);                        
+                    } */
+                    
                 })
                 .catch(err => { console.error(err) })
-        }
+                
+            })
 
-        document.getElementById("signOutButton").addEventListener('click', () => {
-            console.log(google.accounts.id)
-            google.accounts.id.disableAutoSelect();
-            
-            google.accounts.id.revoke(localStorage.getItem('email'),done=>{
-                localStorage.clear();
-                location.reload();
-            }); 
-        })
+
+            function handleCredentialResponse(response) {
+                // decodeJwtResponse() is a custom function defined by you
+                // to decode the credential response.
+                console.log("ID_token =" + response.credential);
+                const body = { "id_token": response.credential }
+
+                fetch("http://localhost:3000/api/auth/google", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data.googleUser);
+                    //localStorage.setItem("email",data.googleUser.correo);
+                    localStorage.setItem("token", response.credential);
+                })
+                .catch(err => { console.error(err) })
+            }
+
+            document.getElementById("signOutButton").addEventListener('click', () => {
+                console.log(google.accounts.id)
+                google.accounts.id.disableAutoSelect();
+
+                google.accounts.id.revoke(localStorage.getItem('email'), done => {
+                    localStorage.clear();
+                    location.reload();
+                });
+            })
         </script>
 
     <body>

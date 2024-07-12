@@ -4,8 +4,8 @@ const bcryptjs = require('bcryptjs');
 const { response ,request} = require('express');
 
 
-
 const Usuario = require('../models/oneUser');
+const { generarJWT } = require('../helpers/generarJWT');
 
 
 const usuarios = {
@@ -31,27 +31,46 @@ const usuarios = {
     //_____________________________________________________________________________________________________________
 
 
+
     usuariosPOST: async (req, res = response) => {
-
-        //const{nombre, ...cola} = req.body; //con esto se desestructuran todos los elementos aunque sean 100 
-        const {nombre,correo,password,rol}= req.body;
-        const usuario = new Usuario({nombre,correo,password,rol});
-
-        //hacer hash de la contraseña
+        const { nombre, correo, password, rol } = req.body;
+        let usuario = new Usuario({ nombre, correo, password, rol });
+    
+        // Hash the password
         const salt = bcryptjs.genSaltSync();
-        usuario.password = bcryptjs.hashSync(usuario.password,salt)
+        usuario.password = bcryptjs.hashSync(usuario.password, salt);
+    
+            // Save the user instance to the database
+            try{
+                await usuario.save();
+            }
+            catch{(err) => {
+                console.log('error', err);
+                res.status(500).json({ msg: 'Error creating user' });
+            }}
+    
+            //Manually set the uid to the _id field
+            usuario.uid = usuario._id;
+    
+            // Generate the JWT
+            try{
+                const token = await generarJWT('usuario.uid')
+                let usuario2 = usuario.toObject()
+                usuario2.token = token;
+                console.log('usuario: ', usuario2);
+                res.status(201).json({
+                    ok: true,
+                    msg: 'api post desde el controlador',
+                    usuario2
+                });
 
 
-        await usuario.save()
-        .catch((err, usuarioDB)=>{
-            console.log('error',err);
-        })
-
-        res.status(201).json({
-            ok: true,
-            msg: 'api post desde el controlador',
-            usuario
-        });
+            }catch{
+                (err) => {console.error('err:: ', err)
+            }
+    
+            
+        } 
     },
     //_____________________________________________________________________________________________________________
     usuariosPATCH: async (req, res = response) => {

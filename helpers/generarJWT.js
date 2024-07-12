@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const generarJWT = (uid='') => {
+const generarJWT = async (uid='') => {
 
     return new Promise((resolve, reject) => {
         const payload = {uid};
