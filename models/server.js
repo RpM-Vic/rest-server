@@ -4,7 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fileUpload = require('express-fileupload');
+const mime = require('mime-types');
 require('dotenv').config();
+
 
 const router = require('../routes/users');
 const routerAuth = require('../routes/authRoutes');
@@ -32,7 +34,12 @@ class Server {
     }
 
     middlewares() {
-        this.app.use(express.static(path.join(__dirname, '..', 'public')))//, 'index.html')));
+        //this.app.use(express.static(path.join(__dirname, '..', 'public')))//, 'index.html')));
+        this.app.use(express.static('public', {
+            setHeaders: (res, path) => {
+              res.setHeader('Content-Type', mime.lookup(path) || 'application/octet-stream');
+            }
+        }));
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(fileUpload({

@@ -60,24 +60,18 @@ routerAuth.post('/google',[
     }
 )
 routerAuth.get('/validate',[
-        validarJWT,
-        validarCampos
+/*         validarJWT,
+        validarCampos */
     ],async(req,res=response)=>{
 
-
-        const usuario = await Usuario.findOne({ _id: req.uid });
-        if (usuario) {
-          res.status(200).json(usuario);
+/*         const usuario = await Usuario.findOne({ _id: req.uid });
+        console.log('usuario', usuario)
+        if (usuario) { */
+        if(true){
+          res.status(200).sendFile(path.join(__dirname, '../public', 'chat.html'));
         } else {
           res.status(404).json({ message: 'Usuario not found' });
         }
-
-
-
-
-
-/*         res.status(200)
-        .sendFile(path.join(__dirname, '../public', 'chat.html')); */
 })
 
 

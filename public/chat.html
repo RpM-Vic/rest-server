@@ -8,7 +8,33 @@
 
 </head>
 <body class="container">
+
+    <div class ="row mt-3">
+        <div class ="col-md-4">
+            <h3>Enviar mensaje</h3>
+            <hr>
+            <input type="text" id="textUid" class="form-control mb-2" placeholder="uid" autocomplete="off">
+            <input type="text" id="textMsg" class="form-control mb-2" placeholder="mensaje" autocomplete="off">
+            <h3>Usuarios activos</h3>
+            <hr>
+            <ul id="ulUsers" class="list-group"></ul>
+
+        </div>
+
+        <div class="col-sm-6">
+            <h3>Chat completo</h3>
+            <hr>
+            <ul id="ulMensajes" class="list-group"></ul>
+        </div>
+
+        <button id="btnSalir" class="btn btn-outline-danger">
+            Log Out
+        </button>
+    </div>
+
+
+
     <script src="./socket.io/socket.io.js"></script>
-    <script src="./scripts/chat.js"></script>
+    <script src="../public/scripts/chat.js"></script>
 </body>
 </html>
