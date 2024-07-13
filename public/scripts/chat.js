@@ -53,6 +53,18 @@ const conectSocket = async () => {
             'x-token': token
         }
     });
+    
+    socket.on('receiveMessage', (payload) => {
+        console.log(payload);
+    });    
+
+     socket.on('activeUsers', (payload) => {
+        console.log(payload);
+    });
+
+    socket.on('reciveDirecMessages', ({ message }) => {
+        console.log({ message });
+    }); 
 
     socket.on('connect', () => {
         console.log('Connected to server');

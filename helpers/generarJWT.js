@@ -31,8 +31,7 @@ const validarJWThelper =async (token)=>{
             return {error: true, msg:'No hay token en la peticion'}
         };
         const payload =jwt.verify(token,process.env.SECRETORPRIVATEKEY);
-        const usuario = await Usuario.findOne({ _id: payload.uid });
-        console.log('payload', usuario.estado)       
+        const usuario = await Usuario.findOne({ _id: payload.uid });      
         if(usuario.estado){
             return usuario.correo
         }
