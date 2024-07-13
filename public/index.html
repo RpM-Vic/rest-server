@@ -50,6 +50,8 @@
         <input type="button" value="sign out" id="signOutButton">
 
         <script>
+            const url = window.location.href.includes('localhost')? 'http://localhost:3000' : 'custom';
+
             const MyForm = document.querySelector('form');
 
             
@@ -67,7 +69,7 @@
                 console.log(formData);
 
                 /////////////////////////////////////////
-                fetch("http://localhost:3000/auth/login", {
+                fetch(url+"/auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -79,7 +81,7 @@
                     if (data.ok) {
                         console.log(data);
                         localStorage.setItem("token",data.token);
-                        window.open('http://localhost:3000/auth/validate') ;
+                        window.open('http://localhost:3000/chat.html') ;
                     }
                     else{
                         console.log(data);                                                

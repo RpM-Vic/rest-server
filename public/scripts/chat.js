@@ -1,42 +1,46 @@
 
 //chats.js
-let socket = null;
+//let socket = null;
 
 // References
+const url = window.location.href.includes('localhost')? 'http://localhost:3000/auth' : 'custom';
 const textUid = document.querySelector('#textUid');
 const textMsg = document.querySelector('#textMsg');
 const ulUsers = document.querySelector('#ulUsers');
 const ulMensajes = document.querySelector('#ulMensajes');
 const btnSalir = document.querySelector('#btnSalir');
-
-const validarJWT = async () => {
-    const token = localStorage.getItem('token') || '';
+ 
+const validarJWThtml = async () => {
+    const token = localStorage.getItem("token") || '';
     if (!token) {
-        window.location = 'index.html';
+        //window.location = 'index.html';
         throw new Error('No token');
     }
 
-    try {
-        const response = await fetch('/auth/login', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-token': token
-            }
-        });
-
-        const data = await response.json();
+    fetch(url + '/validate', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-token': token
+        }
+    })
+    .then(data => data.json()) 
+    .then((data) => {
         if (data.ok) {
-            localStorage.setItem("token", data.token); // token updated
+            //localStorage.setItem("token", data.usuario.token); // token updated
+            console.log('Token validated:', data);
         } else {
             console.error('Token validation failed:', data);
-            window.location = 'index.html';
+            //window.location = 'index.html';
         }
-    } catch (error) {
+    })
+    .catch ((error) =>{
         console.error('Error validating token:', error);
-        window.location = 'index.html';
-    }
+        //window.location = 'index.html';
+    }) 
 };
+validarJWThtml()    
+/* 
 
 const conectSocket = async () => {
     const token = localStorage.getItem('token');
@@ -79,3 +83,4 @@ const main = async () => {
 
 main();
 
+  */

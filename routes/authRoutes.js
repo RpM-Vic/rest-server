@@ -17,7 +17,6 @@ const Usuario=require('../models/oneUser');
 const routerAuth = Router();
 //_____________________________________________________________
 routerAuth.post('/login',[
-    //validarJWT,
     check('password','contraseña requerida').not().isEmpty(),
     check('correo','correo no es valido').isEmail(),
     validarCampos   
@@ -60,17 +59,20 @@ routerAuth.post('/google',[
     }
 )
 routerAuth.get('/validate',[
-/*         validarJWT,
-        validarCampos */
+        validarJWT,
+        validarCampos 
     ],async(req,res=response)=>{
 
-/*         const usuario = await Usuario.findOne({ _id: req.uid });
+        const usuario = await Usuario.findOne({ _id: req.uid });
         console.log('usuario', usuario)
-        if (usuario) { */
-        if(true){
-          res.status(200).sendFile(path.join(__dirname, '../public', 'chat.html'));
+        if (usuario) {
+        //if(true){
+            res.status(200).json({
+                ok:true,
+                usuario
+            })
         } else {
-          res.status(404).json({ message: 'Usuario not found' });
+          res.status(404).json({ok:false, message: 'Usuario not found' });
         }
 })
 
