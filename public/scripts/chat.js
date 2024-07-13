@@ -58,8 +58,8 @@ const conectSocket = async () => {
         console.log('Connected to server');
     });
 
-    socket.on('serverGreet', ({ payload }) => {
-        console.log({ payload });
+    socket.on('ServerGreet', ({ message }) => {
+        console.log({ message });
     });
 
     socket.on('disconnect', () => {
