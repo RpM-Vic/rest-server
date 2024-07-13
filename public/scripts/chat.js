@@ -38,9 +38,8 @@ const validarJWThtml = async () => {
         console.error('Error validating token:', error);
         //window.location = 'index.html';
     }) 
-};
-validarJWThtml()    
-/* 
+};  
+
 
 const conectSocket = async () => {
     const token = localStorage.getItem('token');
@@ -74,7 +73,7 @@ const conectSocket = async () => {
 
 const main = async () => {
     try {
-        await validarJWT();
+        await validarJWThtml();
         await conectSocket();
     } catch (error) {
         console.error('Main function error:', error);
@@ -83,4 +82,4 @@ const main = async () => {
 
 main();
 
-  */
+ 

@@ -64,7 +64,7 @@ routerAuth.get('/validate',[
     ],async(req,res=response)=>{
 
         const usuario = await Usuario.findOne({ _id: req.uid });
-        console.log('usuario', usuario)
+        //console.log('usuario', usuario)
         if (usuario) {
         //if(true){
             res.status(200).json({
