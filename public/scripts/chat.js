@@ -9,6 +9,8 @@ const textMsg = document.querySelector('#textMsg');
 const ulUsers = document.querySelector('#ulUsers');
 const ulMensajes = document.querySelector('#ulMensajes');
 const btnSalir = document.querySelector('#btnSalir');
+const DocTitle = document.querySelector('#DocTitle');
+
  
 const validarJWThtml = async () => {
     const token = localStorage.getItem("token") || '';
@@ -29,6 +31,7 @@ const validarJWThtml = async () => {
         if (data.ok) {
             //localStorage.setItem("token", data.usuario.token); // token updated
             console.log('Token validated:', data);
+            DocTitle.innerText = data.usuario.correo;
         } else {
             console.error('Token validation failed:', data);
             //window.location = 'index.html';
@@ -39,8 +42,24 @@ const validarJWThtml = async () => {
         //window.location = 'index.html';
     }) 
 };  
+//_______________________________________________________________________
+const paintUsers = async (users = []) => {   
+    console.log('users', users);
+    let usersHtml = '';
+    users.forEach(user => {
+        usersHtml += `
+        <li>
+            <p>
+                <h5 class="text-success">${user.name}</h5>
+                <span class="fs-6 text-muted">${user.email}</span>
+            </p>
+        </li>
+        `;
+    });
+    ulUsers.innerHTML = usersHtml;
+};
 
-
+//_____________________________________________________________________
 const conectSocket = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -58,9 +77,7 @@ const conectSocket = async () => {
         console.log(payload);
     });    
 
-     socket.on('activeUsers', (payload) => {
-        console.log(payload);
-    });
+    socket.on('activeUsers', await paintUsers);
 
     socket.on('reciveDirecMessages', ({ message }) => {
         console.log({ message });
@@ -81,6 +98,8 @@ const conectSocket = async () => {
     socket.on('error', (error) => {
         console.error('WebSocket error:', error);
     });
+//_______________________________________________________________________________________
+
 };
 
 const main = async () => {

@@ -22,15 +22,15 @@ class ChatMessages{
         return Object.values(this.users)
     }
     sendMessage(uid,name, message){
-        this.messages.unshift(new message(uid, name,message))
+        this.messages.unshift(new Message(uid, name,message))
     }
 
     connectUser(usuario){
-        this.users[usuario.id]= usuario
+        this.users[usuario]= usuario
     }
 
     disconnectUser(id){
-        delete this.users[usuario]
+        delete this.users[id]
     }
 }
 

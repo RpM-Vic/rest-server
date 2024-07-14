@@ -33,7 +33,7 @@ const validarJWThelper =async (token)=>{
         const payload =jwt.verify(token,process.env.SECRETORPRIVATEKEY);
         const usuario = await Usuario.findOne({ _id: payload.uid });      
         if(usuario.estado){
-            return usuario.correo
+            return usuario
         }
         else{
             return {error:true,msg: 'Usuario borrado'}

@@ -21,7 +21,13 @@ const socketController= (socket= new Socket,io)=>{//this one is used only in dev
         //add the conected user 
         chatMessages.connectUser(user)
         io.emit('activeUsers',chatMessages.userArray)
-        
+
+        //clean when someone disconnects
+        socket.on('disconnect',()=>{
+            chatMessages.disconnectUser(user);
+            console.log(`The user ${user.correo} has disconnected`);
+            io.emit('activeUsers',chatMessages.userArray)
+        })
     }
     userF();
     
