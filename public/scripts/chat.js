@@ -41,11 +41,25 @@ const validarJWThtml = async () => {
         console.error('Error validating token:', error);
         //window.location = 'index.html';
     }) 
+};
+//_______________________________________________________________________
+const paintMesages = async (users = []) => {   
+    let messagesHtml = '';
+    users.forEach(user => {
+        messagesHtml += `
+        <li>
+            <p>
+                <span class="text-primary">${user.name}</span>
+                <span class="fs-6 text-muted">${user.message}</span>
+            </p>
+        </li>
+        `;
+    });
+    ulMensajes.innerHTML = messagesHtml;
 };  
 //_______________________________________________________________________
 const paintUsers = async (users = []) => {   
-    console.log('users', users);
-    let usersHtml = 'hi every one';
+    let usersHtml = '';
     users.forEach(user => {
         usersHtml += `
         <li>
@@ -72,12 +86,10 @@ const conectSocket = async () => {
             'x-token': token
         }
     });
-    
-    socket.on('receiveMessage', (payload) => {
-        console.log(payload);
-    });    
 
     socket.on('activeUsers', await paintUsers);
+
+    socket.on('reciveMessages', await paintMesages) 
 
     socket.on('reciveDirecMessages', ({ message }) => {
         console.log({ message });
@@ -102,6 +114,20 @@ const conectSocket = async () => {
 
 };
 
+textMsg.addEventListener('keyup', ({keyCode}) => {
+    const message = textMsg.value;
+    const uid = textUid.value;
+    if(keyCode !== 13){
+        return;
+    }
+    if (message === '') {
+        return;
+    }
+    socket.emit('clientMessage', {message,uid})
+    textMsg.value = '';
+        
+})
+
 const main = async () => {
     try {
         await validarJWThtml();
@@ -113,4 +139,3 @@ const main = async () => {
 
 main();
 
- 
