@@ -45,13 +45,13 @@ const validarJWThtml = async () => {
 //_______________________________________________________________________
 const paintUsers = async (users = []) => {   
     console.log('users', users);
-    let usersHtml = '';
+    let usersHtml = 'hi every one';
     users.forEach(user => {
         usersHtml += `
         <li>
             <p>
-                <h5 class="text-success">${user.name}</h5>
-                <span class="fs-6 text-muted">${user.email}</span>
+                <h5 class="text-success">${user.nombre}</h5>
+                <span class="fs-6 text-muted">${user.correo}</span>
             </p>
         </li>
         `;
