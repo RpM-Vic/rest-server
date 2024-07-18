@@ -91,9 +91,9 @@ const conectSocket = async () => {
 
     socket.on('reciveMessages', await paintMesages) 
 
-    socket.on('reciveDirecMessages', ({ message }) => {
-        console.log({ message });
-    }); 
+    socket.on('reciveDirecMessages',(payload)=>{
+        console.log('Mensaje recibido',payload)
+    });
 
     socket.on('connect', () => {
         console.log('Connected to server');

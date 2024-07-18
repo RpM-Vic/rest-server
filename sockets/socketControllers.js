@@ -18,6 +18,22 @@ const socketController= (socket= new Socket,io)=>{//this one is used only in dev
             socket.disconnect()
         }
 
+//connect to a custom room
+        socket.join(user.correo,()=>{})// global, socket.id and user.correo
+
+        socket.on('clientMessage',({uid,message})=>{
+
+            if(uid){
+                socket.to(user.correo).emit('reciveDirecMessages',{de: user.correo , message});
+            }
+            chatMessages.sendMessage(user.id,user.correo,message);
+            io.emit('reciveMessages',chatMessages.latestMessages)
+
+        })
+//_________________________________________________________________________
+//default messages
+
+
         //add the conected user 
         chatMessages.connectUser(user)
         io.emit('activeUsers',chatMessages.userArray)
@@ -28,23 +44,6 @@ const socketController= (socket= new Socket,io)=>{//this one is used only in dev
             console.log(`The user ${user.correo} has disconnected`);
             io.emit('activeUsers',chatMessages.userArray)
         })
-
-        socket.on('clientMessage',({uid,message})=>{
-            chatMessages.sendMessage(user.id,user.correo,message);
-            io.emit('reciveMessages',chatMessages.latestMessages)
-
-        })
-
-
-
-
-
-
-
-
-
-
-
 
     }
     userF();
